@@ -48,13 +48,13 @@ jobs:
       - name: Upload coverage.out artifact
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-go-${{ matrix.go-version }}
+          name: coverage-report-go-1.25
           path: coverage.out
           retention-days: 7
 
       - name: Upload coverage.html artifact
         uses: actions/upload-artifact@v4
         with:
-          name: html-coverage-report-go-${{ matrix.go-version }}
+          name: html-coverage-report-go-1.25
           path: coverage.html
           retention-days: 7
