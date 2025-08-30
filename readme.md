@@ -15,6 +15,14 @@ Lava will only require two things:
 
 ---
 
+## Planning
+
+I'm not 100% sure how I'm going to build this out but the general is I should run the command from the root of a obsidian vault and it should parse the markdown and generate static html files. I think thats a good starting point.
+
+No smart building out of links, no nothing.
+
+---
+
 ## FaQ
 
 > Why Golang and no xyz?
