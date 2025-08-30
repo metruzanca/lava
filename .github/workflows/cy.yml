@@ -1,0 +1,63 @@
+name: Go Checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ["1.22"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+          cache: true
+
+      - name: Download Go modules
+        run: go mod download
+
+      - name: Run go mod tidy check
+        run: |
+          go mod tidy
+          git diff --exit-code go.mod go.sum || \
+            (echo "go.mod or go.sum has uncommitted changes after 'go mod tidy'." && \
+             echo "Please run 'go mod tidy' and commit the changes." && exit 1)
+
+      - name: Run go fmt check
+        run: |
+          go fmt ./...
+          git diff --exit-code || \
+            (echo "Go code is not formatted correctly after 'go fmt'." && \
+             echo "Please run 'go fmt ./...' and commit the changes." && exit 1)
+
+      - name: Run Go tests
+        run: go test -v -coverprofile=coverage.out ./...
+
+      - name: Generate HTML coverage report
+        run: go tool cover -html=coverage.out -o coverage.html
+
+      - name: Upload coverage.out artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-go-${{ matrix.go-version }}
+          path: coverage.out
+          retention-days: 7
+
+      - name: Upload coverage.html artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-coverage-report-go-${{ matrix.go-version }}
+          path: coverage.html
+          retention-days: 7
