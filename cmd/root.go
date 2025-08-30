@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/kauppie/sliceutils"
 	"github.com/metruzanca/lava/internal/fs"
-	"github.com/metruzanca/lava/internal/lists"
 	"github.com/metruzanca/lava/internal/markdown"
 	"github.com/spf13/cobra"
 )
@@ -27,18 +27,18 @@ var rootCmd = &cobra.Command{
 			return
 		}
 
-		mdFiles := lists.Filter(files, func(f string) bool {
+		mdFiles := sliceutils.Filter(files, func(f string) bool {
 			return strings.HasSuffix(f, ".md")
 		})
 
-		mdFileContents := lists.Map(mdFiles, func(f string) *LavaFile {
+		mdFileContents := sliceutils.Map(mdFiles, func(f string) *LavaFile {
 			return &LavaFile{
 				Path:    f,
 				Content: fs.ReadFile(f),
 			}
 		})
 
-		nonEmptyMdFiles := lists.Filter(mdFileContents, func(content *LavaFile) bool {
+		nonEmptyMdFiles := sliceutils.Filter(mdFileContents, func(content *LavaFile) bool {
 			return content.Content != ""
 		})
 
