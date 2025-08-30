@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/metruzanca/lava/internal"
+	"github.com/metruzanca/lava/internal/fs"
 	"github.com/metruzanca/lava/internal/lists"
 	"github.com/metruzanca/lava/internal/markdown"
 	"github.com/spf13/cobra"
@@ -20,7 +20,7 @@ var rootCmd = &cobra.Command{
 	Use:   "lava",
 	Short: "Lava is a minimalist static site generator for Obsidian Vaults",
 	Run: func(cmd *cobra.Command, args []string) {
-		files, err := internal.GetFileList("testdata/obsidian-help/Sandbox")
+		files, err := fs.GetFileList("testdata/obsidian-help/Sandbox")
 
 		if err != nil {
 			fmt.Println("Error getting file list:", err)
@@ -34,7 +34,7 @@ var rootCmd = &cobra.Command{
 		mdFileContents := lists.Map(mdFiles, func(f string) *LavaFile {
 			return &LavaFile{
 				Path:    f,
-				Content: internal.ReadFile(f),
+				Content: fs.ReadFile(f),
 			}
 		})
 
@@ -43,7 +43,7 @@ var rootCmd = &cobra.Command{
 		})
 
 		for _, file := range nonEmptyMdFiles {
-			internal.WriteFile("./build/"+internal.ChangeExtension(file.Path, ".html"), markdown.Markdown2Html(file.Content))
+			fs.WriteFile("./build/"+fs.ChangeExtension(file.Path, ".html"), markdown.Markdown2Html(file.Content))
 		}
 	},
 }
